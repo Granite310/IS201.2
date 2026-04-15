@@ -1,0 +1,121 @@
+/* BACKGROUND */
+body {
+    background-image: linear-gradient(
+        rgba(0, 0, 0, 0.6),
+        rgba(0, 0, 0, 0.6)
+    ),
+    url("../assets/img/green-tennis-court-wallpaper-vector-21189776.avif");
+
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+}
+
+h1, h2, h3 {
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* HEADER */
+.top {
+    text-align: center;
+    font-size: 3em;
+    margin: 20px 0;
+}
+
+/* SECTIONS */
+.intro_section,
+.image_section,
+.video_section,
+.footer {
+    width: 80%;
+    margin: auto;
+    margin-bottom: 30px;
+}
+
+/* MAIN IMAGE */
+.tennis_image {
+    display: block;
+    margin: auto;
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+/* PLAYER LAYOUT */
+.player_block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+/* TEXT SIDE */
+.player_text {
+    width: 65%;
+}
+
+/* IMAGE SIDE */
+.player_image {
+    width: 200px;
+    height: 200px;
+
+    object-fit: contain; /* shows full image */
+    background-color: black; /* fills empty space nicely */
+
+    border-radius: 10px;
+}
+
+/* VIDEO EMBED */
+.video-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.video-wrapper iframe {
+    width: 560px;
+    height: 315px;
+    border-radius: 10px;
+}
+
+/* LINKS */
+a {
+    color: #00ffcc;
+}
+
+a:hover {
+    color: #ffff66;
+}
+
+/* FOOTER */
+.footer {
+    width: 80%;
+    margin: 40px auto 0 auto;
+    padding-top: 20px;
+    text-align: center;
+
+    border-top: 2px solid rgba(255, 255, 255, 0.6);
+
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+}
+
+.tableau_section {
+    width: 80%;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.tableau-wrapper iframe {
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}

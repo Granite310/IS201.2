@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>GF IS 201 Web Project - Game</title>
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+    </head>
+    <body>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="index.html">Main Page</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">About</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="game.html">Fun Game</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Page Header-->
+        <header class="masthead" style="background-image: url('assets/img/dino.jpeg')">
+            <div class="container position-relative px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="post-heading">
+                            <h1>The Dinosaur Game</h1>
+                            <h2 class="subheading">Help the Lonely T-Rex reach the end</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Post Content-->
+        <article class="mb-4">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+
+                <h2 class="section-heading">Dino Runner</h2>
+                <p class="mb-4">
+                    Press <strong>Space</strong> to jump. Avoid obstacles. The longer you survive, the higher your score.
+                </p>
+
+                <!-- GAME CONTAINER -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-body text-center">
+
+                        <canvas id="gameCanvas" width="700" height="250"
+                            style="background:#f8f9fa; border-radius:12px;"></canvas>
+
+                        <div class="mt-3">
+                            <h5 id="score">Score: 0</h5>
+                            <button id="restartBtn" class="btn btn-dark btn-sm mt-2">
+                                Restart Game
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</article>
+        <!-- Footer-->
+        <footer class="border-top">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        
+                        <div class="small text-center text-muted fst-italic">Copyright &copy; Grant Freeman 2026</div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+        <script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+const scoreEl = document.getElementById("score");
+const restartBtn = document.getElementById("restartBtn");
+
+// ---------------- AUDIO ----------------
+let audioCtx;
+function initAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+document.addEventListener("keydown", initAudio);
+document.addEventListener("click", initAudio);
+
+function beep(f, d, t="square") {
+    if (!audioCtx) return;
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = t;
+    o.frequency.value = f;
+    g.gain.value = 0.08;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start();
+    o.stop(audioCtx.currentTime + d);
+}
+
+const soundJump = () => beep(520, 0.07);
+const soundHit = () => beep(110, 0.3, "sawtooth");
+
+// ---------------- GAME STATE ----------------
+let dino = {
+    x: 60,
+    y: 200,
+    w: 40,
+    h: 40,
+    vy: 0,
+    jumping: false,
+    frame: 0
+};
+
+let groundY = 200;
+let gravity = 0.6;
+
+let obstacles = [];
+let score = 0;
+let gameOver = false;
+let speed = 6;
+let time = 0;
+let level = 1;
+let started = false;
+
+// ---------------- HIGH SCORE ----------------
+let highScore = localStorage.getItem("dinoHighScore") || 0;
+
+// ---------------- INPUT ----------------
+document.addEventListener("keydown", (e) => {
+    if (!started) started = true;
+    if (e.code === "Space") jump();
+});
+
+canvas.addEventListener("click", () => {
+    if (!started) started = true;
+    jump();
+});
+
+function jump() {
+    if (dino.jumping || gameOver) return;
+    dino.vy = -11;
+    dino.jumping = true;
+    soundJump();
+}
+
+// ---------------- OBSTACLES ----------------
+function spawnObstacle() {
+    const bird = Math.random() < 0.35;
+
+    if (bird) {
+        obstacles.push({
+            x: canvas.width,
+            y: groundY - 90 - Math.random() * 40,
+            w: 35,
+            h: 25,
+            type: "bird",
+            flap: Math.random() * 10
+        });
+    } else {
+        const sizes = [
+            { w: 18, h: 40 },
+            { w: 28, h: 50 },
+            { w: 14, h: 30 },
+            { w: 38, h: 45 }
+        ];
+
+        const s = sizes[Math.floor(Math.random() * sizes.length)];
+
+        obstacles.push({
+            x: canvas.width,
+            y: groundY + 10,
+            w: s.w,
+            h: s.h,
+            type: "cactus",
+            variant: Math.floor(Math.random() * 3)
+        });
+    }
+}
+
+// ---------------- PARALLAX BACKGROUND ----------------
+function drawBackground() {
+    const sky = (Math.sin(time / 600) + 1) / 2;
+
+    ctx.fillStyle = `rgb(${200*sky + 30*(1-sky)}, ${220*sky + 40*(1-sky)}, ${255*sky})`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // mountains
+    ctx.fillStyle = "rgba(120,120,120,0.3)";
+    for (let i = 0; i < 3; i++) {
+        let x = (time * 0.2 + i * 250) % (canvas.width + 200);
+        ctx.beginPath();
+        ctx.moveTo(x, groundY + 40);
+        ctx.lineTo(x + 120, 120);
+        ctx.lineTo(x + 240, groundY + 40);
+        ctx.fill();
+    }
+
+    // clouds
+    ctx.fillStyle = "rgba(255,255,255,0.6)";
+    for (let i = 0; i < 5; i++) {
+        let x = (time * 0.5 + i * 180) % (canvas.width + 100);
+        ctx.beginPath();
+        ctx.arc(x, 60 + i * 10, 20, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+// ---------------- TREX ----------------
+function drawDino(x, y, bounce) {
+    ctx.fillStyle = "#111";
+
+    // body
+    ctx.fillRect(x + 5, y + bounce, 28, 18);
+
+    // tail
+    ctx.beginPath();
+    ctx.moveTo(x + 5, y + 10 + bounce);
+    ctx.lineTo(x - 10, y + 15 + bounce);
+    ctx.lineTo(x + 5, y + 18 + bounce);
+    ctx.fill();
+
+    // head
+    ctx.fillRect(x + 25, y - 10 + bounce, 18, 18);
+
+    // jaw
+    ctx.fillRect(x + 32, y + 5 + bounce, 15, 6);
+
+    // eye
+    ctx.fillStyle = "white";
+    ctx.fillRect(x + 37, y - 5 + bounce, 3, 3);
+
+    // legs
+    ctx.fillStyle = "#111";
+    let leg = Math.sin(dino.frame * 0.3) * 2;
+    ctx.fillRect(x + 10, y + 20 + bounce, 6, 12 + leg);
+    ctx.fillRect(x + 22, y + 20 + bounce, 6, 12 - leg);
+}
+
+// ---------------- BIRD ----------------
+function drawBird(o) {
+    o.flap += 0.25;
+
+    ctx.fillStyle = "#2f2f2f";
+
+    let wing = Math.sin(o.flap) * 6;
+
+    ctx.beginPath();
+    ctx.moveTo(o.x, o.y + wing);
+    ctx.lineTo(o.x + 15, o.y - 10 + wing);
+    ctx.lineTo(o.x + 30, o.y + wing);
+    ctx.lineTo(o.x + 15, o.y + 5 + wing);
+    ctx.fill();
+
+    ctx.fillRect(o.x + 12, o.y, 10, 8);
+    ctx.fillRect(o.x + 22, o.y - 3, 6, 6);
+}
+
+// ---------------- LOOP ----------------
+function update() {
+    if (gameOver) return;
+
+    time++;
+
+    drawBackground();
+
+    // ground
+    ctx.fillStyle = "#333";
+    ctx.fillRect(0, groundY + 40, canvas.width, 2);
+
+    // start screen
+    if (!started) {
+        ctx.fillStyle = "#111";
+        ctx.font = "20px Arial";
+        ctx.fillText("Click or Press Space to Start", 200, 120);
+        requestAnimationFrame(update);
+        return;
+    }
+
+    // speed scaling
+    speed += 0.002;
+
+    // level system
+    let newLevel = Math.floor(score / 500) + 1;
+    if (newLevel > level) {
+        level = newLevel;
+        speed += 1;
+    }
+
+    // dino physics
+    dino.y += dino.vy;
+    dino.vy += gravity;
+
+    if (dino.y > groundY) {
+        dino.y = groundY;
+        dino.vy = 0;
+        dino.jumping = false;
+    }
+
+    dino.frame++;
+    let bounce = Math.sin(dino.frame * 0.2) * 2;
+
+    drawDino(dino.x, dino.y, bounce);
+
+    // obstacles
+    for (let o of obstacles) {
+        o.x -= speed;
+
+        if (o.type === "cactus") {
+            ctx.fillStyle = "#2d6a4f";
+
+            if (o.variant === 0) ctx.fillRect(o.x, o.y, o.w, o.h);
+            else if (o.variant === 1) {
+                ctx.fillRect(o.x, o.y, o.w/2, o.h);
+                ctx.fillRect(o.x + o.w/2, o.y + 10, o.w/2, o.h - 10);
+            } else {
+                ctx.beginPath();
+                ctx.arc(o.x, o.y + 20, o.w/2, 0, Math.PI*2);
+                ctx.fill();
+            }
+        } else {
+            drawBird(o);
+        }
+
+        // collision
+        if (
+            dino.x < o.x + o.w &&
+            dino.x + dino.w > o.x &&
+            dino.y < o.y + o.h &&
+            dino.y + dino.h > o.y
+        ) {
+            gameOver = true;
+            soundHit();
+
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem("dinoHighScore", highScore);
+            }
+        }
+    }
+
+    obstacles = obstacles.filter(o => o.x > -60);
+
+    // score
+    score++;
+    scoreEl.innerHTML =
+        "Score: " + Math.floor(score/10) +
+        " | High: " + Math.floor(highScore/10) +
+        " | Level: " + level;
+
+    requestAnimationFrame(update);
+}
+
+// spawn system
+function loopSpawn() {
+    if (!gameOver) {
+        spawnObstacle();
+        setTimeout(loopSpawn, Math.max(450, 1200 - speed * 40));
+    }
+}
+
+// restart
+restartBtn.onclick = () => location.reload();
+
+// start
+loopSpawn();
+update();
+</script>
+    </body>
+</html>

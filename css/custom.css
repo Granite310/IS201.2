@@ -1,0 +1,175 @@
+/* Responsive header: scale the site title so it stays on one line without clipping */
+.site-heading h1 {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: clamp(1.25rem, 4.5vw, 2.75rem);
+  line-height: 1;
+}
+
+@media (min-width: 1200px) {
+  .site-heading h1 {
+    font-size: 3rem;
+  }
+}
+/* Responsive header: scale the site title so it stays on one line without clipping */
+.site-heading h1 {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: clamp(1.25rem, 4.5vw, 2.75rem);
+  line-height: 1;
+}
+
+@media (min-width: 1200px) {
+  .site-heading h1 {
+    font-size: 3rem;
+  }
+}
+/* Custom overrides for small adjustments */
+.site-heading h1 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 480px) {
+    .site-heading h1 {
+        font-size: 1.25rem;
+        line-height: 1.1;
+    }
+}
+/* Custom overrides for small adjustments */
+.site-heading h1 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 480px) {
+    .site-heading h1 {
+        font-size: 1.25rem;
+        line-height: 1.1;
+    }
+}
+
+.site-heading h1 {
+display: inline-block;
+white-space: nowrap;
+font-size: clamp(1.25rem, 4.5vw, 2.75rem);
+line-height: 1;
+}
+
+header.masthead {
+background-position: right center;
+background-size: cover;
+background-repeat: no-repeat;
+}
+
+.feature-box{
+padding:1.15rem;
+border:1px solid rgba(0,0,0,0.08);
+border-radius:.6rem;
+background:rgba(255,255,255,0.96);
+transition:transform .12s ease, box-shadow .12s ease, background .12s;
+text-decoration:none;
+color:inherit;
+}
+.feature-box i{ display:block; color:#0d6efd; }
+.feature-box:hover{
+transform:translateY(-6px);
+box-shadow:0 12px 30px rgba(13,110,253,0.08);
+background:rgba(13,110,253,0.03);
+}
+@media (max-width:767px){
+.feature-row .col-md-4{ margin-bottom:.75rem; }
+}
+/* Ensure feature titles stay on one line and make boxes wider */
+.feature-row .col-md-4 {
+flex: 0 0 36%;
+max-width: 36%;
+}
+.feature-box {
+padding: 1.5rem;
+min-height: 140px;
+min-width: 100%;
+}
+.feature-box h3 {
+white-space: nowrap;
+overflow: visible;
+text-overflow: clip;
+font-size: 1.125rem;
+margin: 0;
+}
+.feature-box p {
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+margin: 0;
+color: #6c757d;
+}
+
+/* If titles still wrap on small screens, reduce size */
+@media (max-width: 991px){
+.feature-row .col-md-4 { flex: 0 0 100%; max-width:100%; }
+.feature-box h3 { white-space: normal; font-size: 1rem; }
+}
+
+.feature-row{ display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+.feature-row > .col-12, .feature-row > .col-md-4{ box-sizing:border-box; }
+.feature-row > .col-md-4{ flex:0 0 33.3333%; max-width:33.3333%; }
+.feature-box{ width:100%; display:flex; flex-direction:column; align-items:center; padding:1.5rem; }
+
+@media (min-width:1200px){
+.feature-row > .col-md-4{ flex:0 0 30%; max-width:30%; } /* wider on very large screens */
+}
+@media (max-width:767.98px){
+.feature-row > .col-md-4{ flex:0 0 100%; max-width:100%; }
+.feature-box h3{ white-space:normal; font-size:1rem; }
+}
+
+/* Make all badges more transparent while keeping readable text color */
+.badge{
+  background-color: rgba(13,110,253,0.12) !important;
+  color: #0d6efd !important;
+  border: 1px solid rgba(13,110,253,0.12) !important;
+}
+
+
+/* Make all badges more transparent while keeping readable text color */
+.badge{
+  background-color: rgba(13, 221, 253, 0.12) !important;
+  color: #0dd1fd !important;
+  border: 1px solid rgba(13,110,253,0.12) !important;
+}
+
+.contact-cards{
+display:flex;
+gap:1rem;
+justify-content:center;
+flex-wrap:wrap;
+margin-bottom:1.5rem;
+}
+.contact-card{
+min-width:260px;
+max-width:360px;
+flex:1 1 300px;
+padding:1rem 1.25rem;
+border-radius:.6rem;
+border:1px solid rgba(0,0,0,0.08);
+background:rgba(255,255,255,0.9);
+text-align:center;
+text-decoration:none;
+color:inherit;
+transition:transform .12s ease, box-shadow .12s ease, background .12s;
+}
+.contact-card i{ font-size:1.5rem; color:#0d6efd; display:block; margin-bottom:.5rem; }
+.contact-card h4{ margin:0 0 .25rem; }
+.contact-card p{ margin:0; color:#6c757d; }
+.contact-card:hover{
+transform:translateY(-5px);
+box-shadow:0 12px 30px rgba(13,110,253,0.06);
+background:rgba(13,110,253,0.025);
+}
+@media (max-width:767.98px){
+.contact-cards{ flex-direction:column; align-items:center; }
+.contact-card{ width:100%; max-width:540px; }
+}
